@@ -51,9 +51,11 @@ while True:
     # Process detections
     for i, det in enumerate(visual_results):  # detections per image
         # Write results
-        for *xyxy, conf, cls in reversed(det):
-            label = f'{names[int(cls)]} {conf:.2f}'
-            plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
+        xyxy = [det[0], det[1], det[2], det[3]]
+        conf = det[4]
+        cls = det[5]
+        label = f'{names[int(cls)]} {conf:.2f}'
+        plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
 
         cv2.imshow('Visual', visual)
         cv2.waitKey(1)  # 1 millisecond
