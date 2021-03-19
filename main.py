@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import torch
+from yolov5.utils import plots
+import random
 
 thermal_coords = {'topleftx': 0, 'toplefty': 0, 'botrightx': 1920, 'botrighty': 1080}
 
@@ -9,7 +11,10 @@ visual_coords = {'topleftx': thermal_coords['topleftx'] + thermal_coords['toplef
                  'botrightx': thermal_coords['botrightx'] + 640,
                  'botrighty': 360}
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5x_best.pt')  # custom model
+model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best.pt')  # custom model
+
+names = model.module.names if hasattr(model, 'module') else model.names
+colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
 webcam = cv2.VideoCapture(1)
 
@@ -22,12 +27,21 @@ while True:
     # (height, width) = frame.shape[:2]
     thermal = frame[thermal_coords['toplefty']:thermal_coords['botrighty'], thermal_coords['topleftx']:thermal_coords['botrightx']]
 
-    cv2.imshow('Video', thermal)
+    cv2.imshow('Thermal', thermal)
 
     visual = frame[visual_coords['toplefty']:visual_coords['botrighty'], visual_coords['topleftx']:visual_coords['botrightx']]
 
     visual_results = model(visual)
     visual_results = np.array(visual_results.xyxy[0])
+    # Process detections
+    for i, det in enumerate(visual_results):  # detections per image
+        # Write results
+        for *xyxy, conf, cls in reversed(det):
+            label = f'{names[int(cls)]} {conf:.2f}'
+            plots.plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
+
+        cv2.imshow('Visual', visual)
+        cv2.waitKey(1)  # 1 millisecond
     # structure of array
     #                   x1           y1           x2           y2   confidence        class
     # tensor([[7.50637e+02, 4.37279e+01, 1.15887e+03, 7.08682e+02, 8.18137e-01, 0.00000e+00],
