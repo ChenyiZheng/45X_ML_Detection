@@ -22,12 +22,12 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
 width = 1920
 height = 1080
 
-thermal_coords = {'topleftx': 0, 'toplefty': 0, 'botrightx': 640, 'botrighty': 480}
+thermal_coords = {'x0': 0, 'y0': 0, 'x1': 640, 'y1': 480}
 
-visual_coords = {'topleftx': thermal_coords['topleftx'] + thermal_coords['toplefty'],
-                 'toplefty': 0,
-                 'botrightx': 1920,
-                 'botrighty': 720}
+visual_coords = {'x0': thermal_coords['x1'],
+                 'y0': 0,
+                 'x1': 1920,
+                 'y1': 720}
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best.pt')  # custom model
 
@@ -44,27 +44,27 @@ while True:
     ret, frame = webcam.read()
     # (height, width) = frame.shape[:2]
     cv2.imshow('OG', frame)
-    thermal = frame[thermal_coords['toplefty']:thermal_coords['botrighty'], thermal_coords['topleftx']:thermal_coords['botrightx']]
+    thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
 
     cv2.imshow('Thermal', thermal)
 
-    visual = frame[visual_coords['toplefty']:visual_coords['botrighty'], visual_coords['topleftx']:visual_coords['botrightx']]
+    visual = frame[visual_coords['y0']:visual_coords['y1'], visual_coords['x0']:visual_coords['x1']]
 
     cv2.imshow('Visual', visual)
 
-    # visual_results = model(visual)
-    # visual_results = np.array(visual_results.xyxy[0])
-    # # Process detections
-    # for i, det in enumerate(visual_results):  # detections per image
-    #     # Write results
-    #     xyxy = [det[0], det[1], det[2], det[3]]
-    #     conf = det[4]
-    #     cls = det[5]
-    #     label = f'{names[int(cls)]} {conf:.2f}'
-    #     plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
-    #
-    #     cv2.imshow('Visual', visual)
-    #     cv2.waitKey(1)  # 1 millisecond
+    visual_results = model(visual)
+    visual_results = np.array(visual_results.xyxy[0])
+    # Process detections
+    for i, det in enumerate(visual_results):  # detections per image
+        # Write results
+        xyxy = [det[0], det[1], det[2], det[3]]
+        conf = det[4]
+        cls = det[5]
+        label = f'{names[int(cls)]} {conf:.2f}'
+        plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
+
+        cv2.imshow('Visual', visual)
+        cv2.waitKey(1)  # 1 millisecond
 
     # structure of array
     #                   x1           y1           x2           y2   confidence        class
