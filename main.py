@@ -53,13 +53,13 @@ while True:
     cv2.imshow('Visual', visual)
 
     visual_results = model(visual)
-    visual_results = np.array(visual_results.xyxy[0])
+    detection_results = np.array(visual_results.xyxy[0])
     # Process detections
-    for i, det in enumerate(visual_results):  # detections per image
+    for info in enumerate(detection_results):  # detections per image
         # Write results
-        xyxy = [det[0], det[1], det[2], det[3]]
-        conf = det[4]
-        cls = det[5]
+        xyxy = [info[0], info[1], info[2], info[3]]
+        conf = info[4]
+        cls = info[5]
         label = f'{names[int(cls)]} {conf:.2f}'
         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
 
