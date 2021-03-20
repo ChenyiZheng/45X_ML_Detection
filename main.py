@@ -43,6 +43,7 @@ webcam = cv2.VideoCapture(0)
 while True:
     ret, frame = webcam.read()
     # (height, width) = frame.shape[:2]
+    frame = cv2.resize(frame, (width, height))  # for testing on webcam
     cv2.imshow('OG', frame)
     thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
 
@@ -75,6 +76,15 @@ while True:
     # (x, y, w, h) = cv2.boundingRect(c)
     # cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 20)
     # roi = frame[y:y+h, x:x+w]
+
+    # Concatenate processed videos to one screen
+    horizontal_concat = np.zeros((height, width, 3), np.uint8)  # create an empty numpy array with full dimension in rgb
+    horizontal_concat[:thermal_coords['y1'], :thermal_coords['x1'], :3] = thermal
+    horizontal_concat[:visual_coords['y1'], visual_coords['x0']:visual_coords['x1'], :3] = visual
+    cv2.putText(horizontal_concat, 'TEST INFO',
+                (round(visual_coords['x0'] / 2), round(thermal_coords['y1'] + height / 2)), 0, 3, (255, 255, 255), 0,
+                cv2.LINE_AA)  # display useful info
+    cv2.imshow('Processed Video', horizontal_concat)
 
     if cv2.waitKey(1) == 27:
         exit(0)
