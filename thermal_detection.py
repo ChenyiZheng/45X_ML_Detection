@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def thermal_detect(image, lower_bound, upper_bound: int = [255, 10, 255]):
+def thermal_detect(image, lower_bound, upper_bound: int = [0, 0, 255]):
     original = image.copy()
     image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     lower = np.array(lower_bound, dtype="uint8")
@@ -18,17 +18,21 @@ def thermal_detect(image, lower_bound, upper_bound: int = [255, 10, 255]):
     area = 0
     for c in cnts:
         area += cv2.contourArea(c)
-        cv2.drawContours(original, [c], 0, (0, 0, 0), 2)
+        cv2.drawContours(original, [c], 0, (0, 220, 255), 2)
 
     print(area)
     cv2.imshow('mask', mask)
     cv2.imshow('original', original)
     cv2.imshow('opening', opening)
-    cv2.waitKey(1)
+    cv2.waitKey()
 
 
-webcam = cv2.VideoCapture(0)
+frame = cv2.imread('Thermal.png')
+thermal_detect(frame, lower_bound=[0, 0, 150])
 
-while True:
-    ret, frame = webcam.read()
-    thermal_detect(frame, lower_bound=[0, 0, 0])
+
+# webcam = cv2.VideoCapture(0)
+#
+# while True:
+#     ret, frame = webcam.read()
+#     thermal_detect(frame, lower_bound=[0, 0, 160])
