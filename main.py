@@ -3,6 +3,7 @@ import numpy as np
 import torch
 # from yolov5.utils import plots
 import random
+import time
 
 
 def plot_one_box(x, img, color=None, label=None, line_thickness=3):
@@ -17,6 +18,13 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
         cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+
+
+def time_synchronized():
+    # pytorch-accurate time
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    return time.time()
 
 
 width = 1920
@@ -45,17 +53,25 @@ while True:
     # (height, width) = frame.shape[:2]
     frame = cv2.resize(frame, (width, height))  # for testing on webcam
     cv2.imshow('OG', frame)
-    thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
 
+    # Thermal Stream
+    thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
     cv2.imshow('Thermal', thermal)
 
-    visual = frame[visual_coords['y0']:visual_coords['y1'], visual_coords['x0']:visual_coords['x1']]
+    # Thermal Detections
 
+    # Visual Stream
+    visual = frame[visual_coords['y0']:visual_coords['y1'], visual_coords['x0']:visual_coords['x1']]
     cv2.imshow('Visual', visual)
 
+    # Visual Detections
+    t1 = time_synchronized()
     visual_results = model(visual)
+    t2 = time_synchronized()
+    visual_processed_time = t2 - t1
+
     detection_results = np.array(visual_results.xyxy[0])
-    # Process detections
+
     for info in enumerate(detection_results):  # detections per image
         # Write results
         xyxy = [info[0], info[1], info[2], info[3]]
