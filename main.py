@@ -69,6 +69,7 @@ while True:
 
     detection_results = np.array(visual_results.xyxy[0])
 
+    visual_logs = ' '
     for i, info in enumerate(detection_results):  # detections per image
         # Write results
         xyxy = [info[0], info[1], info[2], info[3]]
@@ -81,18 +82,18 @@ while True:
         cv2.waitKey(1)  # 1 millisecond
 
     # write logs
-    if save_txt:
+    if save_txt and (thermal_logs or detection_results):
         logs = thermal_logs + visual_logs
         write_logs(filename, logs)
 
-    # Concatenate processed videos to one screen
-    horizontal_concat = np.zeros((height, width, 3), np.uint8)  # create an empty numpy array with full dimension in rgb
-    horizontal_concat[:thermal_coords['y1'], :thermal_coords['x1'], :3] = thermal
-    horizontal_concat[:visual_coords['y1'], visual_coords['x0']:visual_coords['x1'], :3] = visual
-    cv2.putText(horizontal_concat, 'TEST INFO',
-                (round(visual_coords['x0'] / 2), round(thermal_coords['y1'] + height / 2)), 0, 3, (255, 255, 255), 0,
-                cv2.LINE_AA)  # display useful info
-    cv2.imshow('Processed Video', horizontal_concat)
+    # # Concatenate processed videos to one screen
+    # horizontal_concat = np.zeros((height, width, 3), np.uint8)  # create an empty numpy array with full dimension in rgb
+    # horizontal_concat[:thermal_coords['y1'], :thermal_coords['x1'], :3] = thermal
+    # horizontal_concat[:visual_coords['y1'], visual_coords['x0']:visual_coords['x1'], :3] = visual
+    # cv2.putText(horizontal_concat, 'TEST INFO',
+    #             (round(visual_coords['x0'] / 2), round(thermal_coords['y1'] + height / 2)), 0, 3, (255, 255, 255), 0,
+    #             cv2.LINE_AA)  # display useful info
+    # cv2.imshow('Processed Video', horizontal_concat)
 
     if cv2.waitKey(1) == 27:
         exit(0)
