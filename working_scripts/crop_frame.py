@@ -2,6 +2,13 @@ import cv2
 
 
 def crop_image(image, thermal_aspect=None, visual_aspect=None):
+    """
+    A function to crop the image to two separate images. Assumes that half the width is dedicate to each image.
+    :param image: The image
+    :param thermal_aspect: The aspect ratio of the left most image
+    :param visual_aspect: The aspect ratio of the right most image
+    :return:
+    """
     (height, width) = image.shape[:2]
     half_width = int(round(width/2))
     thermal_coords = {'x0': 0,
