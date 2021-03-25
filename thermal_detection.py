@@ -28,7 +28,7 @@ def thermal_detect(image, lower_bound, upper_bound: int = [0, 0, 255]):
 
 
 frame = cv2.imread('Thermal.png')
-thermal_detect(frame, lower_bound=[0, 0, 150])
+thermal_detect(frame, lower_bound=[0, 0, 127])
 
 
 # webcam = cv2.VideoCapture(0)
