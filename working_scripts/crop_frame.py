@@ -35,14 +35,15 @@ def crop_image(image, thermal_aspect=None, visual_aspect=None):
 # cv2.imshow('Visual', visual)
 # cv2.waitKey()
 
-webcam = cv2.VideoCapture(r'C:\Users\imhen\PycharmProjects\45X_ML_Detection\thermalvisualvideo.mp4')
+webcam = cv2.VideoCapture(r'C:\Users\imhen\PycharmProjects\45X_ML_Detection\ThermVisVid4x3.mp4')
 
 while True:
     try:
         ret, frame = webcam.read()
         thermal, visual = crop_image(frame, thermal_aspect={'width': 4, 'height': 3}, visual_aspect={'width': 4, 'height': 3})
-        cv2.imshow('Thermal', thermal)
+        thermal = thermal_
         cv2.imshow('Visual', visual)
+
         cv2.waitKey(1)
     except:
         cv2.destroyAllWindows()
