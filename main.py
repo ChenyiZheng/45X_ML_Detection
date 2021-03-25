@@ -9,6 +9,9 @@ save_txt = 1
 width = 1920
 height = 1080
 
+thermal_aspect = {'width': 4, 'height': 3}
+visual_aspect = {'width': 16, 'height': 9}
+
 thermal_coords = {'x0': 0, 'y0': 0, 'x1': 960, 'y1': 720}
 
 normalized_thermal_coords = {'x0': thermal_coords['x0']/width, 'y0': thermal_coords['x0']/height,
