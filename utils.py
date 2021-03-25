@@ -8,8 +8,8 @@ def thermal_detect(image, lower_bound: int = (0, 0, 127), upper_bound: int = (0,
     Draws a contour around the object of interest that is within the range passed.
 
     :param image: The original thermal image
-    :param lower_bound: The lower bound of greyscale in HSV
-    :param upper_bound: The upper bound of greyscale in HSV
+    :param lower_bound: The lower bound in HSV
+    :param upper_bound: The upper bound in HSV
     :return:
     """
     original = image.copy()
