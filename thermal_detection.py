@@ -21,14 +21,14 @@ def thermal_detect(image, lower_bound, upper_bound: int = [0, 0, 255]):
         cv2.drawContours(original, [c], 0, (0, 220, 255), 2)
 
     print(area)
-    cv2.imshow('mask', mask)
+    # cv2.imshow('mask', mask)
     cv2.imshow('original', original)
-    cv2.imshow('opening', opening)
+    # cv2.imshow('opening', opening)
     cv2.waitKey()
 
 
-frame = cv2.imread('Thermal.png')
-thermal_detect(frame, lower_bound=[0, 0, 150])
+frame = cv2.imread('ThermVisArmImage.jpg')
+thermal_detect(frame, lower_bound=[0, 0, 127])
 
 
 # webcam = cv2.VideoCapture(0)
