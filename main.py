@@ -39,10 +39,14 @@ if save_txt:
 while True:
     ret, frame = webcam.read()
     (height, width) = frame.shape[:2]
-    thermal_coords = {'x0': normalized_thermal_coords['x0']*width, 'y0': normalized_thermal_coords['x0']*height,
-                      'x1': normalized_thermal_coords['x1']*width, 'y1': normalized_thermal_coords['x1']*height}
-    visual_coords = {'x0': normalized_visual_coords['x0']*width, 'y0': normalized_visual_coords['x0']*height,
-                      'x1': normalized_visual_coords['x1']*width, 'y1': normalized_visual_coords['x1']*height}
+    thermal_coords = {'x0': int(round(normalized_thermal_coords['x0']*width)),
+                      'y0': int(round(normalized_thermal_coords['x0']*height)),
+                      'x1': int(round(normalized_thermal_coords['x1']*width)),
+                      'y1': int(round(normalized_thermal_coords['x1']*height))}
+    visual_coords = {'x0': int(round(normalized_visual_coords['x0']*width)),
+                     'y0': int(round(normalized_visual_coords['x0']*height)),
+                     'x1': int(round(normalized_visual_coords['x1']*width)),
+                     'y1': int(round(normalized_visual_coords['x1']*height))}
     cv2.imshow('OG', frame)
 
     # Thermal Stream
