@@ -20,11 +20,12 @@ def thermal_detect(image, lower_bound, upper_bound: int = [0, 0, 255]):
         area += cv2.contourArea(c)
         cv2.drawContours(original, [c], 0, (0, 220, 255), 2)
 
-    print(area)
+    # print(area)
     # cv2.imshow('mask', mask)
-    cv2.imshow('original', original)
+    # cv2.imshow('original', original)
     # cv2.imshow('opening', opening)
-    cv2.waitKey()
+    # cv2.waitKey()
+    return original, area, len(cnts)
 
 
 frame = cv2.imread('ThermVisArmImage.jpg')
