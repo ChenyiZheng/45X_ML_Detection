@@ -67,3 +67,24 @@ def time_synchronized():
     if torch.cuda.is_available():
         torch.cuda.synchronize()
     return time.time()
+
+
+def crop_image(image, thermal_aspect=None, visual_aspect=None):
+    (height, width) = image.shape[:2]
+    half_width = int(round(width/2))
+    thermal_coords = {'x0': 0,
+                      'y0': 0,
+                      'x1': half_width,
+                      'y1': int(round(half_width*thermal_aspect['height']/thermal_aspect['width']))
+                      }
+
+    visual_coords = {'x0': thermal_coords['x1'],
+                     'y0': 0,
+                     'x1': int(round(thermal_coords['x1'] + width/2)),
+                     'y1': int(round(half_width*visual_aspect['height']/visual_aspect['width']))
+                     }
+
+    thermal = image[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
+    visual = image[visual_coords['y0']:visual_coords['y1'], visual_coords['x0']:visual_coords['x1']]
+
+    return thermal, visual
