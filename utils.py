@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import random
+import torch
+import time
 
 
 def thermal_detect(image, lower_bound: int = (0, 0, 127), upper_bound: int = (0, 0, 255)):
@@ -53,3 +55,15 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
         cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+
+
+def write_logs(filename, line):
+    with open(filename + '.txt', 'a') as f:
+        f.write(line + '\n')
+
+
+def time_synchronized():
+    # pytorch-accurate time
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    return time.time()
