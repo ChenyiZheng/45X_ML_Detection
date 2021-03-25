@@ -10,7 +10,7 @@ width = 1920
 height = 1080
 
 thermal_aspect = {'width': 4, 'height': 3}
-visual_aspect = {'width': 16, 'height': 9}
+visual_aspect = {'width': 4, 'height': 3}
 
 thermal_coords = {'x0': 0, 'y0': 0, 'x1': 960, 'y1': 720}
 
