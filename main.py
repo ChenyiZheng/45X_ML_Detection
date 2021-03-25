@@ -39,7 +39,7 @@ while True:
 
     # Thermal Stream
     thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
-    thermal_detect(thermal, [0, 0, 0])
+    thermal_detect(thermal)
     cv2.imshow('Thermal', thermal)
 
     # Thermal Detections

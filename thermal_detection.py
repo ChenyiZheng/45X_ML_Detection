@@ -36,13 +36,20 @@ def thermal_detect(image, lower_bound=(0, 0, 127), upper_bound=(0, 0, 255)):
     return original, area, len(cnts)
 
 
-frame = cv2.imread('ThermVisArmImage.jpg')
-original, area, length = thermal_detect(frame, lower_bound=[0, 0, 127])
-cv2.imshow('OG', original)
-cv2.waitKey()
+# frame = cv2.imread('ThermVisArmImage.jpg')
+# original, area, length = thermal_detect(frame, lower_bound=[0, 0, 127])
+# cv2.imshow('OG', original)
+# cv2.waitKey()
 
-# webcam = cv2.VideoCapture(0)
-#
-# while True:
-#     ret, frame = webcam.read()
-#     thermal_detect(frame, lower_bound=[0, 0, 160])
+webcam = cv2.VideoCapture('ThermVisVid.mp4')
+
+while True:
+    try:
+        ret, frame = webcam.read()
+        original, area, length = thermal_detect(frame, lower_bound=[0, 0, 127])
+        cv2.imshow('OG', original)
+        cv2.waitKey(1)
+
+    except:
+        cv2.destroyAllWindows()
+        break
