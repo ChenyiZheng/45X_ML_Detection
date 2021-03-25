@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import random
 from datetime import datetime
-from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized
+from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image
 
 save_txt = 1
 width = 1920
@@ -12,19 +12,6 @@ height = 1080
 thermal_aspect = {'width': 4, 'height': 3}
 visual_aspect = {'width': 4, 'height': 3}
 
-thermal_coords = {'x0': 0, 'y0': 0, 'x1': 960, 'y1': 720}
-
-normalized_thermal_coords = {'x0': thermal_coords['x0']/width, 'y0': thermal_coords['x0']/height,
-                             'x1': thermal_coords['x1']/width, 'y1': thermal_coords['x1']/height}
-
-visual_coords = {'x0': thermal_coords['x1'],
-                 'y0': 0,
-                 'x1': thermal_coords['x1'] + 960,
-                 'y1': 540}
-
-normalized_visual_coords = {'x0': visual_coords['x0']/1920, 'y0': visual_coords['x0']/height,
-                             'x1': visual_coords['x1']/1920, 'y1': visual_coords['x1']/height}
-
 model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best.pt')  # custom model
 
 names = model.module.names if hasattr(model, 'module') else model.names
@@ -32,7 +19,7 @@ colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
 # webcam = cv2.VideoCapture(0)
 
-webcam = cv2.VideoCapture('ThermVisVid.mp4')
+webcam = cv2.VideoCapture('ThermVisVid4x3.mp4')
 
 if save_txt:
     filename = datetime.today().strftime('%Y-%m-%d')
@@ -41,26 +28,15 @@ if save_txt:
 
 while True:
     ret, frame = webcam.read()
-    (height, width) = frame.shape[:2]
-    thermal_coords = {'x0': int(round(normalized_thermal_coords['x0']*width)),
-                      'y0': int(round(normalized_thermal_coords['x0']*height)),
-                      'x1': int(round(normalized_thermal_coords['x1']*width)),
-                      'y1': int(round(normalized_thermal_coords['x1']*height))}
-    visual_coords = {'x0': int(round(normalized_visual_coords['x0']*width)),
-                     'y0': int(round(normalized_visual_coords['x0']*height)),
-                     'x1': int(round(normalized_visual_coords['x1']*width)),
-                     'y1': int(round(normalized_visual_coords['x1']*height))}
     cv2.imshow('OG', frame)
 
+    thermal, visual = crop_image(frame, thermal_aspect, visual_aspect)
     # Thermal Stream
-    thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
-    thermal_detect(thermal)
+    thermal, tot_area, num_hotspots = thermal_detect(thermal)
     cv2.imshow('Thermal', thermal)
     thermal_logs = ' '
-    # Thermal Detections
 
     # Visual Stream
-    visual = frame[visual_coords['y0']:visual_coords['y1'], visual_coords['x0']:visual_coords['x1']]
     cv2.imshow('Visual', visual)
 
     # Visual Detections
