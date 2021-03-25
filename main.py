@@ -9,15 +9,15 @@ save_txt = 1
 width = 1920
 height = 1080
 
-thermal_coords = {'x0': 0, 'y0': 0, 'x1': 640, 'y1': 640}
+thermal_coords = {'x0': 0, 'y0': 0, 'x1': 960, 'y1': 720}
 
 normalized_thermal_coords = {'x0': thermal_coords['x0']/width, 'y0': thermal_coords['x0']/height,
                              'x1': thermal_coords['x1']/width, 'y1': thermal_coords['x1']/height}
 
 visual_coords = {'x0': thermal_coords['x1'],
                  'y0': 0,
-                 'x1': thermal_coords['x1'] + 640,
-                 'y1': 480}
+                 'x1': thermal_coords['x1'] + 960,
+                 'y1': 540}
 
 normalized_visual_coords = {'x0': visual_coords['x0']/1920, 'y0': visual_coords['x0']/height,
                              'x1': visual_coords['x1']/1920, 'y1': visual_coords['x1']/height}
