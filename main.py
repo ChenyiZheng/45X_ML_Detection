@@ -5,7 +5,8 @@ import torch
 import random
 import time
 from .thermal_detection import thermal_detect
-
+from write_logs import write_logs, time_synchronized
+from datetime import datetime
 
 def plot_one_box(x, img, color=None, label=None, line_thickness=3):
     # Plots one bounding box on image img
@@ -19,13 +20,6 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
         cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
-
-
-def time_synchronized():
-    # pytorch-accurate time
-    if torch.cuda.is_available():
-        torch.cuda.synchronize()
-    return time.time()
 
 
 width = 1920
@@ -67,6 +61,7 @@ while True:
     cv2.imshow('Visual', visual)
 
     # Visual Detections
+    logs_date = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
     t1 = time_synchronized()
     visual_results = model(visual)
     t2 = time_synchronized()
@@ -81,6 +76,8 @@ while True:
         cls = info[5]
         label = f'{names[int(cls)]} {conf:.2f}'
         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
+        log = f'{logs_date} {label} {i} Done. ({t2 - t1:.3f}s)'
+        write_logs(log)
 
         cv2.imshow('Visual', visual)
         cv2.waitKey(1)  # 1 millisecond
