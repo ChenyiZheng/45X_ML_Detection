@@ -1,12 +1,9 @@
 import cv2
 import numpy as np
 import torch
-# from yolov5.utils import plots
 import random
-import time
-from .write_logs import write_logs, time_synchronized
 from datetime import datetime
-from .utils import thermal_detect, plot_one_box
+from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized
 
 save_txt = 1
 width = 1920
@@ -24,7 +21,9 @@ model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_be
 names = model.module.names if hasattr(model, 'module') else model.names
 colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
-webcam = cv2.VideoCapture(0)
+# webcam = cv2.VideoCapture(0)
+
+webcam = cv2.VideoCapture('ThermVisVid.mp4')
 
 if save_txt:
     filename = datetime.today().strftime('%Y-%m-%d')
