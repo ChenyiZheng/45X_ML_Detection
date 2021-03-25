@@ -28,8 +28,8 @@ webcam = cv2.VideoCapture(0)
 
 if save_txt:
     filename = datetime.today().strftime('%Y-%m-%d')
-    with open(filename + 'txt', 'a') as f:
-        f.write('detection starts at ' + '.txt' + '\n')
+    with open(filename + '.txt', 'a') as f:
+        f.write('detection starts at ' + filename + '\n')
 
 while True:
     ret, frame = webcam.read()
@@ -41,7 +41,7 @@ while True:
     thermal = frame[thermal_coords['y0']:thermal_coords['y1'], thermal_coords['x0']:thermal_coords['x1']]
     thermal_detect(thermal)
     cv2.imshow('Thermal', thermal)
-
+    thermal_logs = ' '
     # Thermal Detections
 
     # Visual Stream
@@ -64,11 +64,14 @@ while True:
         cls = info[5]
         label = f'{names[int(cls)]} {conf:.2f}'
         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
-        log = f'{timestamp} {label} {i} Done. ({t2 - t1:.3f}s)'
-        write_logs(filename, log)
-
+        visual_logs = timestamp + f' ,#{i+1} {label}'
         cv2.imshow('Visual', visual)
         cv2.waitKey(1)  # 1 millisecond
+
+    # write logs
+    if save_txt:
+        logs = thermal_logs + visual_logs
+        write_logs(filename, logs)
 
     # Concatenate processed videos to one screen
     horizontal_concat = np.zeros((height, width, 3), np.uint8)  # create an empty numpy array with full dimension in rgb
