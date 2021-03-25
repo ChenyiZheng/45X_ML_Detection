@@ -12,12 +12,12 @@ save_txt = 1
 width = 1920
 height = 1080
 
-thermal_coords = {'x0': 0, 'y0': 0, 'x1': 640, 'y1': 480}
+thermal_coords = {'x0': 0, 'y0': 0, 'x1': 640, 'y1': 640}
 
 visual_coords = {'x0': thermal_coords['x1'],
                  'y0': 0,
-                 'x1': 1920,
-                 'y1': 720}
+                 'x1': thermal_coords['x1'] + 640,
+                 'y1': 480}
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best.pt')  # custom model
 
