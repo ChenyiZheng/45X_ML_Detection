@@ -2,8 +2,8 @@ import torch
 import time
 
 
-def write_logs(line):
-    with open('logs' + '.txt', 'a') as f:
+def write_logs(filename, line):
+    with open(filename + '.txt', 'a') as f:
         f.write(line + '\n')
 
 
