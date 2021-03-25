@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import random
 
 
 def thermal_detect(image, lower_bound: int = [0, 0, 127], upper_bound: int = [0, 0, 255]):
@@ -28,20 +29,27 @@ def thermal_detect(image, lower_bound: int = [0, 0, 127], upper_bound: int = [0,
         area += cv2.contourArea(c)
         cv2.drawContours(original, [c], 0, (0, 220, 255), 2)    # Draw the contours on top of the original image
 
-    # print(area)
-    # cv2.imshow('mask', mask)
-    # cv2.imshow('original', original)
-    # cv2.imshow('opening', opening)
-    # cv2.waitKey()
     return original, area, len(cnts)
 
 
-frame = cv2.imread('ThermVisArmImage.jpg')
-thermal_detect(frame, lower_bound=[0, 0, 127])
+def plot_one_box(x, img, color=None, label=None, line_thickness=3):
+    """
+    Draws a bounding box
 
-
-# webcam = cv2.VideoCapture(0)
-#
-# while True:
-#     ret, frame = webcam.read()
-#     thermal_detect(frame, lower_bound=[0, 0, 160])
+    :param x: The coordinates for the box
+    :param img: The original image
+    :param color: The desired colour in BGR
+    :param label: The label to we written with the rectangle
+    :param line_thickness: The desired line thickness of the box
+    :return:
+    """
+    tl = line_thickness or round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line/font thickness
+    color = color or [random.randint(0, 255) for _ in range(3)]
+    c1, c2 = (int(x[0]), int(x[1])), (int(x[2]), int(x[3]))
+    cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
+    if label:
+        tf = max(tl - 1, 1)  # font thickness
+        t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
+        c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
+        cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
+        cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
