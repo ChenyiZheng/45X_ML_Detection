@@ -8,7 +8,7 @@ from .write_logs import write_logs, time_synchronized
 from datetime import datetime
 from .utils import thermal_detect, plot_one_box
 
-
+save_txt = 1
 width = 1920
 height = 1080
 
@@ -30,6 +30,11 @@ webcam = cv2.VideoCapture(0)
 # cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 20)
 # roi = frame[y:y+h, x:x+w]
 
+if save_txt:
+    filename = datetime.today().strftime('%Y-%m-%d')
+    with open(filename + 'txt', 'a') as f:
+        f.write('detection starts at ' + '.txt' + '\n')
+
 while True:
     ret, frame = webcam.read()
     # (height, width) = frame.shape[:2]
@@ -48,7 +53,7 @@ while True:
     cv2.imshow('Visual', visual)
 
     # Visual Detections
-    logs_date = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+    timestamp = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
     t1 = time_synchronized()
     visual_results = model(visual)
     t2 = time_synchronized()
@@ -56,15 +61,15 @@ while True:
 
     detection_results = np.array(visual_results.xyxy[0])
 
-    for info in enumerate(detection_results):  # detections per image
+    for i, info in enumerate(detection_results):  # detections per image
         # Write results
         xyxy = [info[0], info[1], info[2], info[3]]
         conf = info[4]
         cls = info[5]
         label = f'{names[int(cls)]} {conf:.2f}'
         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
-        log = f'{logs_date} {label} {i} Done. ({t2 - t1:.3f}s)'
-        write_logs(log)
+        log = f'{timestamp} {label} {i} Done. ({t2 - t1:.3f}s)'
+        write_logs(filename, log)
 
         cv2.imshow('Visual', visual)
         cv2.waitKey(1)  # 1 millisecond
