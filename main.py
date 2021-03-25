@@ -11,10 +11,16 @@ height = 1080
 
 thermal_coords = {'x0': 0, 'y0': 0, 'x1': 640, 'y1': 640}
 
+normalized_thermal_coords = {'x0': thermal_coords['x0']/width, 'y0': thermal_coords['x0']/height,
+                             'x1': thermal_coords['x1']/width, 'y1': thermal_coords['x1']/height}
+
 visual_coords = {'x0': thermal_coords['x1'],
                  'y0': 0,
                  'x1': thermal_coords['x1'] + 640,
                  'y1': 480}
+
+normalized_visual_coords = {'x0': visual_coords['x0']/1920, 'y0': visual_coords['x0']/height,
+                             'x1': visual_coords['x1']/1920, 'y1': visual_coords['x1']/height}
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best.pt')  # custom model
 
@@ -32,8 +38,11 @@ if save_txt:
 
 while True:
     ret, frame = webcam.read()
-    # (height, width) = frame.shape[:2]
-    frame = cv2.resize(frame, (width, height))  # for testing on webcam
+    (height, width) = frame.shape[:2]
+    thermal_coords = {'x0': normalized_thermal_coords['x0']*width, 'y0': normalized_thermal_coords['x0']*height,
+                      'x1': normalized_thermal_coords['x1']*width, 'y1': normalized_thermal_coords['x1']*height}
+    visual_coords = {'x0': normalized_visual_coords['x0']*width, 'y0': normalized_visual_coords['x0']*height,
+                      'x1': normalized_visual_coords['x1']*width, 'y1': normalized_visual_coords['x1']*height}
     cv2.imshow('OG', frame)
 
     # Thermal Stream
