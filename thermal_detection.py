@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def thermal_detect(image, lower_bound: int = [0, 0, 127], upper_bound: int = [0, 0, 255]):
+def thermal_detect(image, lower_bound=(0, 0, 127), upper_bound=(0, 0, 255)):
     """
     Draws a contour around the object of interest that is within the range passed.
 
@@ -37,8 +37,9 @@ def thermal_detect(image, lower_bound: int = [0, 0, 127], upper_bound: int = [0,
 
 
 frame = cv2.imread('ThermVisArmImage.jpg')
-thermal_detect(frame, lower_bound=[0, 0, 127])
-
+original, area, length = thermal_detect(frame, lower_bound=[0, 0, 127])
+cv2.imshow('OG', original)
+cv2.waitKey()
 
 # webcam = cv2.VideoCapture(0)
 #

@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 
-def thermal_detect(image, lower_bound: int = [0, 0, 127], upper_bound: int = [0, 0, 255]):
+def thermal_detect(image, lower_bound: int = (0, 0, 127), upper_bound: int = (0, 0, 255)):
     """
     Draws a contour around the object of interest that is within the range passed.
 
