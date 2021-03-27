@@ -29,7 +29,7 @@ while True:
     thermal, visual = crop_image(frame, thermal_aspect, visual_aspect)
     # Thermal Stream
     thermal, tot_area, num_hotspots = thermal_detect(thermal)
-    cv2.imshow('Thermal', thermal)
+    # cv2.imshow('Thermal', thermal)
 
     # Visual Stream
     # cv2.imshow('Visual', visual)
@@ -37,7 +37,7 @@ while True:
     # Visual Detections
     timestamp = datetime.today().strftime('%H:%M:%S')
     t1 = time_synchronized()
-    visual_results = model(visual)
+    visual_results = model(visual, size=640)
     t2 = time_synchronized()
     visual_processed_time = round(t2 - t1, 3)
 
@@ -56,8 +56,11 @@ while True:
         else:
             visual_logs = 'None '
 
-    cv2.imshow('Visual', visual)
-    cv2.waitKey(1)  # 1 millisecond
+    # cv2.imshow('Visual', visual)
+    # cv2.waitKey(1)  # 1 millisecond
+
+    concat_img = np.concatenate((thermal, visual), axis=1)
+    cv2.imshow('Inferred Frame', concat_img)
 
     # write logs
     if save_txt:
