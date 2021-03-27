@@ -53,10 +53,11 @@ while True:
             label = f'{names[int(cls)]} {conf:.2f}'
             plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
             visual_logs = visual_logs + f'#{i + 1} {label}, '
-            cv2.imshow('Visual', visual)
-            cv2.waitKey(1)  # 1 millisecond
         else:
             visual_logs = 'None '
+
+    cv2.imshow('Visual', visual)
+    cv2.waitKey(1)  # 1 millisecond
 
     # write logs
     if save_txt:
