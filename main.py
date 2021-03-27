@@ -3,12 +3,11 @@ import numpy as np
 import torch
 import random
 from datetime import datetime
-from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image
+from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames
 
 save_txt = 1
+save_img = 1
 filename = datetime.today().strftime('%Y-%m-%dT%H%M%S%z')
-# width = 1920
-# height = 1080
 
 thermal_aspect = {'width': 4, 'height': 3}
 visual_aspect = {'width': 4, 'height': 3}
@@ -35,7 +34,7 @@ while True:
     # cv2.imshow('Visual', visual)
 
     # Visual Detections
-    timestamp = datetime.today().strftime('%H:%M:%S')
+    timestamp = datetime.today().strftime('%H:%M:%S:%f')[:-3]
     t1 = time_synchronized()
     visual_results = model(visual, size=640)
     t2 = time_synchronized()
@@ -65,6 +64,9 @@ while True:
     # write logs
     if save_txt:
         write_logs(filename, num_hotspots, tot_area, visual_logs, timestamp, visual_processed_time)
+
+    if save_img:
+        save_frames(filename, timestamp, frame, concat_img)
 
     # # Concatenate processed videos to one screen
     # horizontal_concat = np.zeros((height, width, 3), np.uint8)  # create an empty numpy array with full dimension in rgb
