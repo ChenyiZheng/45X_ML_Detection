@@ -59,6 +59,11 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
 
 
 def write_logs(filename, num_hotspots, tot_area, visual_logs, timestamp, visual_processed_time):
+    root_dir = os.path.abspath(os.curdir)
+    logs_dir = f'{root_dir}/logs/'
+    if not os.path.exists(logs_dir):
+        os.makedirs(logs_dir)
+    path = os.path.join(logs_dir, filename)
     with open(filename + '.txt', 'a') as f:
         if os.stat(filename + '.txt').st_size == 0:
             f.write('detection starts at ' + filename + '\n' +
