@@ -3,6 +3,7 @@ import numpy as np
 import random
 import torch
 import time
+import os
 
 
 def thermal_detect(image, lower_bound: int = (0, 0, 127), upper_bound: int = (0, 0, 255)):
@@ -57,9 +58,15 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
         cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
 
 
-def write_logs(filename, line):
+def write_logs(filename, num_hotspots, tot_area, visual_logs, timestamp, visual_processed_time):
     with open(filename + '.txt', 'a') as f:
-        f.write(line + '\n')
+        if os.stat(filename + '.txt').st_size == 0:
+            f.write('detection starts at ' + filename + '\n' +
+                    "{:<13}".format('Time') + "{:<40}".format(' Thermal Results') + '  Visual Results \n')
+        else:
+            thermal_logs = f'# of hotspots: {num_hotspots}, total area: {tot_area}'
+            line = f"{timestamp:<13} {thermal_logs:<40} {visual_logs}({visual_processed_time} s) Done. "
+            f.write(line + '\n')
 
 
 def time_synchronized():
