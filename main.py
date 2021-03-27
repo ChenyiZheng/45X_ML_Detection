@@ -24,7 +24,7 @@ webcam = cv2.VideoCapture('ThermVisVid4x3.mp4')
 
 while True:
     ret, frame = webcam.read()
-    cv2.imshow('OG', frame)
+    # cv2.imshow('OG', frame)
 
     thermal, visual = crop_image(frame, thermal_aspect, visual_aspect)
     # Thermal Stream
@@ -32,7 +32,7 @@ while True:
     cv2.imshow('Thermal', thermal)
 
     # Visual Stream
-    cv2.imshow('Visual', visual)
+    # cv2.imshow('Visual', visual)
 
     # Visual Detections
     timestamp = datetime.today().strftime('%H:%M:%S')

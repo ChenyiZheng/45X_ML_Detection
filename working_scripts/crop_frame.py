@@ -41,9 +41,8 @@ while True:
     try:
         ret, frame = webcam.read()
         thermal, visual = crop_image(frame, thermal_aspect={'width': 4, 'height': 3}, visual_aspect={'width': 4, 'height': 3})
-        thermal = thermal_
+        cv2.imshow('Thermal', thermal)
         cv2.imshow('Visual', visual)
-
         cv2.waitKey(1)
     except:
         cv2.destroyAllWindows()
