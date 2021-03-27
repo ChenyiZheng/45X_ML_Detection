@@ -6,8 +6,9 @@ from datetime import datetime
 from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image
 
 save_txt = 1
-width = 1920
-height = 1080
+filename = datetime.today().strftime('%Y-%m-%dT%H%M%S%z')
+# width = 1920
+# height = 1080
 
 thermal_aspect = {'width': 4, 'height': 3}
 visual_aspect = {'width': 4, 'height': 3}
@@ -21,11 +22,6 @@ colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
 webcam = cv2.VideoCapture('ThermVisVid4x3.mp4')
 
-if save_txt:
-    filename = datetime.today().strftime('%Y-%m-%d')
-    with open(filename + '.txt', 'a') as f:
-        f.write('detection starts at ' + filename + '\n')
-
 while True:
     ret, frame = webcam.read()
     cv2.imshow('OG', frame)
@@ -34,36 +30,37 @@ while True:
     # Thermal Stream
     thermal, tot_area, num_hotspots = thermal_detect(thermal)
     cv2.imshow('Thermal', thermal)
-    thermal_logs = ' '
 
     # Visual Stream
     cv2.imshow('Visual', visual)
 
     # Visual Detections
-    timestamp = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+    timestamp = datetime.today().strftime('%H:%M:%S')
     t1 = time_synchronized()
     visual_results = model(visual)
     t2 = time_synchronized()
-    visual_processed_time = t2 - t1
+    visual_processed_time = round(t2 - t1, 3)
 
     detection_results = np.array(visual_results.xyxy[0])
 
     visual_logs = ' '
     for i, info in enumerate(detection_results):  # detections per image
-        # Write results
-        xyxy = [info[0], info[1], info[2], info[3]]
-        conf = info[4]
-        cls = info[5]
-        label = f'{names[int(cls)]} {conf:.2f}'
-        plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
-        visual_logs = timestamp + f' ,#{i+1} {label}'
-        cv2.imshow('Visual', visual)
-        cv2.waitKey(1)  # 1 millisecond
+        if detection_results.size:
+            # Write results
+            xyxy = [info[0], info[1], info[2], info[3]]
+            conf = info[4]
+            cls = info[5]
+            label = f'{names[int(cls)]} {conf:.2f}'
+            plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
+            visual_logs = visual_logs + f'#{i + 1} {label}, '
+            cv2.imshow('Visual', visual)
+            cv2.waitKey(1)  # 1 millisecond
+        else:
+            visual_logs = 'None '
 
     # write logs
-    if save_txt and (thermal_logs or detection_results):
-        logs = thermal_logs + visual_logs
-        write_logs(filename, logs)
+    if save_txt:
+        write_logs(filename, num_hotspots, tot_area, visual_logs, timestamp, visual_processed_time)
 
     # # Concatenate processed videos to one screen
     # horizontal_concat = np.zeros((height, width, 3), np.uint8)  # create an empty numpy array with full dimension in rgb
