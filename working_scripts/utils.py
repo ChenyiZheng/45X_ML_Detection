@@ -74,6 +74,16 @@ def write_logs(filename, num_hotspots, tot_area, visual_logs, timestamp, visual_
             f.write(line + '\n')
 
 
+def save_frames(filename, timestamp, original_frame, processed_frame):
+    root_dir = os.path.abspath(os.curdir)
+    img_dir = f'{root_dir}/logs/images/{filename}'
+    if not os.path.exists(img_dir):
+        os.makedirs(img_dir)
+    timestamp = timestamp.replace(":", "_")
+    cv2.imwrite(os.path.join(img_dir, f'{timestamp}_original.jpg'), original_frame)
+    cv2.imwrite(os.path.join(img_dir, f'{timestamp}_processed.jpg'), processed_frame)
+
+
 def time_synchronized():
     # pytorch-accurate time
     if torch.cuda.is_available():
