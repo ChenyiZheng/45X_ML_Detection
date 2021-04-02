@@ -95,14 +95,14 @@ def detect(weights: str,
                         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
 
         concat_img = None
-        if visual and thermal:
+        if thermal_aspect and visual_aspect:
             concat_img = np.concatenate((thermal, visual), axis=1)
             concat_img = cv2.resize(concat_img, (1920, 720))
 
-        elif visual:
+        elif visual_aspect:
             concat_img = visual
 
-        elif thermal:
+        elif thermal_aspect:
             concat_img = thermal
 
         cv2.imshow('Inferred Frame', concat_img)
