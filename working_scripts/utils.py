@@ -110,3 +110,14 @@ def crop_image(image, thermal_aspect=None, visual_aspect=None):
     visual = image[visual_coords['y0']:visual_coords['y1'], visual_coords['x0']:visual_coords['x1']]
 
     return thermal, visual
+
+def save_videos(filename, frame, fps):
+    (height, width) = frame.shape[:2]
+    size = (width, height)
+    video_dir = f'runs\{filename}.avi'
+    if not os.path.exists(video_dir):
+        os.makedirs('runs/')
+        out_vid = cv2.VideoWriter(video_dir,
+                                  cv2.VideoWriter_fourcc(*'MJPG'),
+                                  fps, size)
+    out_vid.write(frame)

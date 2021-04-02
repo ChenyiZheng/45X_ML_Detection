@@ -2,9 +2,10 @@ import cv2
 import numpy as np
 import torch
 import random
-import time
+import time, os
 from datetime import datetime
-from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames
+from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames, \
+    save_videos
 
 from yolov5.models.experimental import attempt_load
 from yolov5.utils.datasets import letterbox
@@ -23,8 +24,8 @@ def detect(weights: str,
            agnostic_nms: str,
            augment: str,
            thermal_aspect=None,
-           visual_aspect=None):
-
+           visual_aspect=None,
+           save_video=False):
     device = select_device(device)  # 0 or 0,1,2,3 or cpu'
     half = device.type != 'cpu'  # half precision only supported on CUDA
     model = attempt_load(weights, map_location=device)  # load FP32 model
@@ -37,6 +38,8 @@ def detect(weights: str,
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
     webcam = cv2.VideoCapture(source)
+    fps = int(webcam.get(cv2.CAP_PROP_FPS))
+    filename = datetime.today().strftime('%Y-%m-%dT%H%M%S%z')
 
     while True:
         ret, frame = webcam.read()
@@ -107,6 +110,19 @@ def detect(weights: str,
 
         cv2.imshow('Inferred Frame', concat_img)
 
+        if save_video:
+            # save_videos(filename, concat_img, fps)
+            (height, width) = frame.shape[:2]
+            size = (width, height)
+            video_dir = f'runs\{filename}.avi'
+            if not os.path.exists(video_dir):
+                os.makedirs('runs/')
+                out_vid = cv2.VideoWriter(video_dir,
+                                          cv2.VideoWriter_fourcc(*'MJPG'),
+                                          fps, size)
+            else:
+                out_vid.write(frame)
+
         if cv2.waitKey(1) == 27:
             exit(0)
 
@@ -124,4 +140,5 @@ if __name__ == '__main__':
            agnostic_nms='store_true',
            augment='store_true',
            thermal_aspect=None,
-           visual_aspect=visual_aspect)
+           visual_aspect=visual_aspect,
+           save_video=True)
