@@ -5,15 +5,12 @@ import random
 import time
 from datetime import datetime
 from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames
+
 from yolov5.models.experimental import attempt_load
-from yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
-from yolov5.models.experimental import attempt_load
-from yolov5.utils.datasets import LoadStreams, LoadImages, letterbox
-from yolov5.utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, \
-    apply_classifier, \
-    scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
+from yolov5.utils.datasets import letterbox
+from yolov5.utils.general import check_img_size, non_max_suppression, scale_coords
 from yolov5.utils.plots import plot_one_box
-from yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
+from yolov5.utils.torch_utils import select_device, time_synchronized
 import argparse
 
 parser = argparse.ArgumentParser()
