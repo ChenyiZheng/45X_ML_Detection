@@ -94,7 +94,7 @@ def detect(weights: str,
 
                     # Write results
                     for *xyxy, conf, cls in reversed(det):
-                        label = f'{names[int(cls)]} {conf:.2f}'
+                        label = f'{names[int(cls)]} {conf:.2f} {t2-t1:.2f}'
                         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
 
         concat_img = None
