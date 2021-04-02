@@ -5,14 +5,14 @@ import random
 import time
 from datetime import datetime
 from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames
-from models.experimental import attempt_load
-from utils.torch_utils import select_device, load_classifier, time_synchronized
-from models.experimental import attempt_load
-from utils.datasets import LoadStreams, LoadImages, letterbox
-from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
+from yolov5.models.experimental import attempt_load
+from yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
+from yolov5.models.experimental import attempt_load
+from yolov5.utils.datasets import LoadStreams, LoadImages, letterbox
+from yolov5.utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
-from utils.plots import plot_one_box
-from utils.torch_utils import select_device, load_classifier, time_synchronized
+from yolov5.utils.plots import plot_one_box
+from yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -44,7 +44,7 @@ thermal_aspect = {'width': 4, 'height': 3}
 visual_aspect = {'width': 4, 'height': 3}
 
 # model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best_incense.pt')  # custom model
-device = 'cpu'
+device = '0'
 device = select_device(device)
 half = device.type != 'cpu'  # half precision only supported on CUDA
 model = attempt_load('yolov5m_best_incense.pt', map_location=device)  # load FP32 model

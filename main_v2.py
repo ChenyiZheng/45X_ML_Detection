@@ -67,7 +67,7 @@ while True:
     thermal, tot_area, num_hotspots = thermal_detect(thermal)
 
     # Visual Detections
-
+    visual = frame
     # Run inference
     if device.type != 'cpu':
         model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
@@ -93,24 +93,24 @@ while True:
     pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
     t2 = time_synchronized()
 
-    detection_results = np.array(pred.xyxy[0])
+    for i, det in enumerate(pred):  # detections per image
+        gn = torch.tensor(visual.shape)[[1, 0, 1, 0]]  # normalization gain whwh
+        if len(det):
+            # Rescale boxes from img_size to im0 size
+            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], visual.shape).round()
 
-    visual_logs = ' '
-    for i, info in enumerate(detection_results):  # detections per image
-        if detection_results.size:
             # Write results
-            xyxy = [info[0], info[1], info[2], info[3]]
-            conf = info[4]
-            cls = info[5]
-            label = f'{names[int(cls)]} {conf:.2f}'
-            plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
-            visual_logs = visual_logs + f'#{i + 1} {label}, '
-        else:
-            visual_logs = 'None '
+            for *xyxy, conf, cls in reversed(det):
+                if save_txt:  # Write to file
+                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                    line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
 
-    concat_img = np.concatenate((thermal, visual), axis=1)
-    concat_img = cv2.resize(concat_img, (1920, 720))
-    cv2.imshow('Inferred Frame', concat_img)
+                label = f'{names[int(cls)]} {conf:.2f}'
+                plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
+
+    # concat_img = np.concatenate((thermal, visual), axis=1)
+    # concat_img = cv2.resize(concat_img, (1920, 720))
+    cv2.imshow('Inferred Frame', visual)
 
     if cv2.waitKey(1) == 27:
         exit(0)
