@@ -44,7 +44,7 @@ def detect(weights: str,
         thermal = None
         visual = None
 
-        if thermal_detect and visual_aspect:
+        if thermal_aspect and visual_aspect:
             thermal, visual = crop_image(frame, thermal_aspect, visual_aspect)
 
         elif thermal_aspect:
@@ -114,7 +114,7 @@ def detect(weights: str,
 if __name__ == '__main__':
     thermal_aspect = {'width': 4, 'height': 3}
     visual_aspect = {'width': 4, 'height': 3}
-    detect(weights = 'yolov5m_best_incense.pt',
+    detect(weights='yolov5m_best_incense.pt',
            source='incense_yi.MOV',
            device='0',
            img_size=640,
@@ -123,5 +123,5 @@ if __name__ == '__main__':
            classes=0,
            agnostic_nms='store_true',
            augment='store_true',
-           thermal_aspect=thermal_aspect,
+           thermal_aspect=None,
            visual_aspect=visual_aspect)
