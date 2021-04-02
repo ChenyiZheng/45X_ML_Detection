@@ -119,7 +119,6 @@ def detect(weights: str,
             if not os.path.exists(root_dir):
                 os.makedirs(root_dir)
             if not os.path.exists(video_dir):
-                os.makedirs('runs/')
                 out_vid = cv2.VideoWriter(video_dir,
                                           cv2.VideoWriter_fourcc(*'MJPG'),
                                           fps, size)
