@@ -114,7 +114,10 @@ def detect(weights: str,
             # save_videos(filename, concat_img, fps)
             (height, width) = frame.shape[:2]
             size = (width, height)
-            video_dir = f'runs\{filename}.avi'
+            root_dir = 'runs/'
+            video_dir = f'{root_dir}\{filename}.avi'
+            if not os.path.exists(root_dir):
+                os.makedirs(root_dir)
             if not os.path.exists(video_dir):
                 os.makedirs('runs/')
                 out_vid = cv2.VideoWriter(video_dir,
