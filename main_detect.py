@@ -54,12 +54,12 @@ def detect(weights: str,
             visual = frame
 
         # Thermal Stream
-        if thermal:
+        if thermal_aspect:
             thermal, tot_area, num_hotspots = thermal_detect(thermal)
 
         # Visual Detections
         # Run inference
-        if visual:
+        if visual_aspect:
             if device.type != 'cpu':
                 model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
             t0 = time.time()
