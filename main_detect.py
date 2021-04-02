@@ -7,11 +7,11 @@ from datetime import datetime
 from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames, \
     save_videos
 
-from yolov5.models.experimental import attempt_load
-from yolov5.utils.datasets import letterbox
-from yolov5.utils.general import check_img_size, non_max_suppression, scale_coords
-from yolov5.utils.plots import plot_one_box
-from yolov5.utils.torch_utils import select_device, time_synchronized
+from models.experimental import attempt_load
+from utils.datasets import letterbox
+from utils.general import check_img_size, non_max_suppression, scale_coords
+from utils.plots import plot_one_box
+from utils.torch_utils import select_device, time_synchronized
 
 
 def detect(weights: str,
@@ -94,7 +94,7 @@ def detect(weights: str,
 
                     # Write results
                     for *xyxy, conf, cls in reversed(det):
-                        label = f'{names[int(cls)]} {conf:.2f} {t2-t1:.2f}'
+                        label = f'{names[int(cls)]} {conf:.2f} {t2-t1:.2f}s'
                         plot_one_box(xyxy, visual, label=label, color=colors[int(cls)], line_thickness=3)
 
         concat_img = None
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     visual_aspect = {'width': 4, 'height': 3}
     detect(weights='yolov5m_best_incense.pt',
            source='incense_yi.MOV',
-           device='0',
+           device='cpu',
            img_size=640,
            conf_thres=0.1,
            iou_thres=0.25,
