@@ -8,7 +8,7 @@ from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time
 from yolov5.models.experimental import attempt_load
 from yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
 from yolov5.models.experimental import attempt_load
-from yolov5.utils.datasets import LoadStreams, LoadImages
+from yolov5.utils.datasets import LoadStreams, LoadImages, letterbox
 from yolov5.utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
 from yolov5.utils.plots import plot_one_box
@@ -56,10 +56,7 @@ if half:
 names = model.module.names if hasattr(model, 'module') else model.names
 colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
-# webcam = cv2.VideoCapture(0)
-
 webcam = cv2.VideoCapture('incense_yi.MOV')
-# webcam = cv2.VideoCapture(1)
 
 while True:
     ret, frame = webcam.read()
@@ -75,7 +72,14 @@ while True:
     if device.type != 'cpu':
         model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
     t0 = time.time()
-    img = torch.from_numpy(visual).to(device)
+    # Padded resize
+    img = letterbox(visual, 640, stride=stride)[0]
+
+    # Convert
+    img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+    img = np.ascontiguousarray(img)
+
+    img = torch.from_numpy(img).to(device)
     img = img.half() if half else img.float()  # uint8 to fp16/32
     img /= 255.0  # 0 - 255 to 0.0 - 1.0
     if img.ndimension() == 3:
