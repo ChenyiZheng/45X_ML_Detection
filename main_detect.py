@@ -15,7 +15,7 @@ from utils.torch_utils import select_device, time_synchronized
 
 
 def detect(weights: str,
-           source: str,
+           source: str or int,
            device: str,
            img_size: int,
            conf_thres: float,
@@ -131,15 +131,15 @@ def detect(weights: str,
 if __name__ == '__main__':
     thermal_aspect = {'width': 4, 'height': 3}
     visual_aspect = {'width': 4, 'height': 3}
-    detect(weights='yolov5m_best_incense.pt',
-           source='incense_yi.MOV',
-           device='cpu',
+    detect(weights='yolov5m_best_FP.pt',
+           source='dalma_400240.mp4',
+           device='0',
            img_size=640,
-           conf_thres=0.1,
+           conf_thres=0.25,
            iou_thres=0.25,
            classes=[0, 1],
            agnostic_nms='store_true',
            augment='store_true',
            thermal_aspect=None,
            visual_aspect=visual_aspect,
-           save_video=True)
+           save_video=False)
