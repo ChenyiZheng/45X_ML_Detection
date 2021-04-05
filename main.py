@@ -6,20 +6,22 @@ from datetime import datetime
 from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames
 
 save_txt = 1
-save_img = 1
+save_img = 0
 filename = datetime.today().strftime('%Y-%m-%dT%H%M%S%z')
 
 thermal_aspect = {'width': 4, 'height': 3}
 visual_aspect = {'width': 4, 'height': 3}
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best.pt')  # custom model
+model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model='yolov5m_best_incense.pt')  # custom model
 
 names = model.module.names if hasattr(model, 'module') else model.names
 colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
-# webcam = cv2.VideoCapture(0)
+webcam = cv2.VideoCapture(1)
 
-webcam = cv2.VideoCapture('ThermVisVid4x3.mp4')
+#webcam = cv2.VideoCapture('IMG_1854.MOV')
+
+#webcam = cv2.VideoCapture('test.jpg')
 
 while True:
     ret, frame = webcam.read()
@@ -36,7 +38,7 @@ while True:
     # Visual Detections
     timestamp = datetime.today().strftime('%H:%M:%S:%f')[:-3]
     t1 = time_synchronized()
-    visual_results = model(visual, size=640)
+    visual_results = model(visual)
     t2 = time_synchronized()
     visual_processed_time = round(t2 - t1, 3)
 
@@ -59,6 +61,7 @@ while True:
     # cv2.waitKey(1)  # 1 millisecond
 
     concat_img = np.concatenate((thermal, visual), axis=1)
+    concat_img = cv2.resize(concat_img, (1920, 720))
     cv2.imshow('Inferred Frame', concat_img)
 
     # write logs
