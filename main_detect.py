@@ -133,8 +133,8 @@ def detect(weights: str,
 if __name__ == '__main__':
     thermal_aspect = {'width': 4, 'height': 3}
     visual_aspect = {'width': 4, 'height': 3}
-    detect(weights='yolov5m_best.pt',
-           source=r'fireplace.mp4',
+    detect(weights='yolov5m_weights.pt',
+           source=1,
            device='0',
            img_size=640,
            conf_thres=0.25,
