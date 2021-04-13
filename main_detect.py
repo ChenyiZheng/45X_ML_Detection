@@ -112,7 +112,9 @@ def detect(weights: str,
 
         if save_video:
             # save_videos(filename, concat_img, fps)
-            (height, width) = frame.shape[:2]
+            (height, width) = concat_img.shape[:2]
+            height = 720
+            width = 1920
             root_dir = 'runs/'
             video_dir = f'{root_dir}\{filename}.avi'
             if not os.path.exists(root_dir):
@@ -122,7 +124,7 @@ def detect(weights: str,
                                           cv2.VideoWriter_fourcc(*'MJPG'),
                                           fps, (width, height))
             else:
-                out_vid.write(frame)
+                out_vid.write(concat_img)
 
         if cv2.waitKey(1) == 27:
             exit(0)
@@ -131,8 +133,8 @@ def detect(weights: str,
 if __name__ == '__main__':
     thermal_aspect = {'width': 4, 'height': 3}
     visual_aspect = {'width': 4, 'height': 3}
-    detect(weights='yolov5m_best_FP.pt',
-           source='dalma_400240.mp4',
+    detect(weights='yolov5m_best.pt',
+           source=r'fireplace.mp4',
            device='0',
            img_size=640,
            conf_thres=0.25,
@@ -140,6 +142,6 @@ if __name__ == '__main__':
            classes=[0, 1],
            agnostic_nms='store_true',
            augment='store_true',
-           thermal_aspect=None,
+           thermal_aspect=thermal_aspect,
            visual_aspect=visual_aspect,
-           save_video=False)
+           save_video=True)
