@@ -7,11 +7,11 @@ from datetime import datetime
 from working_scripts.utils import thermal_detect, plot_one_box, write_logs, time_synchronized, crop_image, save_frames, \
     save_videos
 
-from models.experimental import attempt_load
-from utils.datasets import letterbox
-from utils.general import check_img_size, non_max_suppression, scale_coords
-from utils.plots import plot_one_box
-from utils.torch_utils import select_device, time_synchronized
+from yolov5.models.experimental import attempt_load
+from yolov5.utils.datasets import letterbox
+from yolov5.utils.general import check_img_size, non_max_suppression, scale_coords
+from yolov5.utils.plots import plot_one_box
+from yolov5.utils.torch_utils import select_device, time_synchronized
 
 
 def detect(weights: str,
@@ -26,6 +26,31 @@ def detect(weights: str,
            thermal_aspect=None,
            visual_aspect=None,
            save_video=False):
+
+    """
+    detect.py takes thermal and/or visual data, apply inference, and return the processed result. The hotspot in thermal
+    data is contoured in yellow. Visual data is processed through YOLOv5 object detection algorithm.
+    This file is modified based on YOLOv5 open-source repository from Ultralytics
+    - Copyright https://github.com/ultralytics/yolov5
+
+    Author: UBC MECH 45X Team 10, Henry Situ, Chenyi Zheng
+    Code development: March 2021
+
+    :param weights: path to the custom weights
+    :param source: path to the source file/folder, 0 for webcam
+    :param device: cuda device, i.e. 0 or 0,1,2,3 or cpu
+    :param img_size: input inference image size in pixels
+    :param conf_thres: object confidence threshold
+    :param iou_thres: iou threshold for NMS
+    :param classes: label categories in list (0-based) i.e. [0, 1] for 2 categories
+    :param agnostic_nms: class-agnostic NMS, set to 'store_true' as default
+    :param augment: augmented inference, set to 'store_true' as default
+    :param thermal_aspect: pass the thermal feed, i.e. thermal_aspect or None
+    :param visual_aspect: pass the visual feed, i.e. visual_aspect or None
+    :param save_video: True or False
+    :return:
+    """
+
     device = select_device(device)  # 0 or 0,1,2,3 or cpu'
     half = device.type != 'cpu'  # half precision only supported on CUDA
     model = attempt_load(weights, map_location=device)  # load FP32 model
@@ -112,9 +137,7 @@ def detect(weights: str,
 
         if save_video:
             # save_videos(filename, concat_img, fps)
-            (height, width) = concat_img.shape[:2]
-            height = 720
-            width = 1920
+            (height, width) = frame.shape[:2]
             root_dir = 'runs/'
             video_dir = f'{root_dir}\{filename}.avi'
             if not os.path.exists(root_dir):
@@ -124,7 +147,7 @@ def detect(weights: str,
                                           cv2.VideoWriter_fourcc(*'MJPG'),
                                           fps, (width, height))
             else:
-                out_vid.write(concat_img)
+                out_vid.write(frame)
 
         if cv2.waitKey(1) == 27:
             exit(0)
@@ -133,8 +156,8 @@ def detect(weights: str,
 if __name__ == '__main__':
     thermal_aspect = {'width': 4, 'height': 3}
     visual_aspect = {'width': 4, 'height': 3}
-    detect(weights='fire_smoke_weights.pt',
-           source=1,
+    detect(weights='yolov5m_best_FP.pt',
+           source='dalma_400240.mp4',
            device='0',
            img_size=640,
            conf_thres=0.25,
@@ -142,6 +165,6 @@ if __name__ == '__main__':
            classes=[0, 1],
            agnostic_nms='store_true',
            augment='store_true',
-           thermal_aspect=thermal_aspect,
+           thermal_aspect=None,
            visual_aspect=visual_aspect,
            save_video=False)
