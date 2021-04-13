@@ -156,8 +156,8 @@ def detect(weights: str,
 if __name__ == '__main__':
     thermal_aspect = {'width': 4, 'height': 3}
     visual_aspect = {'width': 4, 'height': 3}
-    detect(weights='yolov5m_best_FP.pt',
-           source='dalma_400240.mp4',
+    detect(weights='fire_smoke_weights.pt',
+           source=1,
            device='0',
            img_size=640,
            conf_thres=0.25,
@@ -165,6 +165,6 @@ if __name__ == '__main__':
            classes=[0, 1],
            agnostic_nms='store_true',
            augment='store_true',
-           thermal_aspect=None,
+           thermal_aspect=thermal_aspect,
            visual_aspect=visual_aspect,
            save_video=False)
