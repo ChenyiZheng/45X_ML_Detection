@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Arduino Stepper',
+    name='MECH_45X_Detection',
     version=1.0,
     packages=find_packages(),
     url='https://github.com/ChenyiZheng/45X_ML_Detection',
