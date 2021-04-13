@@ -144,4 +144,4 @@ if __name__ == '__main__':
            augment='store_true',
            thermal_aspect=thermal_aspect,
            visual_aspect=visual_aspect,
-           save_video=True)
+           save_video=False)
